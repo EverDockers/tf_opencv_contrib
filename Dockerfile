@@ -21,13 +21,12 @@ RUN apt update && \
     # Python 3.5
     #
     python3.5 python3.5-dev python3-pip && \
+    pip3 install --no-cache-dir --upgrade pip setuptools && \
     # For convenience, alisas (but don't sym-link) python & pip to python3 & pip3 as recommended in:
     # http://askubuntu.com/questions/351318/changing-symlink-python-to-python3-causes-problems
     echo "alias python='python3'" >> /root/.bash_aliases && \
     echo "alias pip='pip3'" >> /root/.bash_aliases && \
-    pip3 install --no-cache-dir --upgrade pip \
-    setuptools \
-    Pillow \
+    pip3 install --no-cache-dir Pillow \
     # Common libraries
     numpy scipy sklearn scikit-image pandas matplotlib \
     #

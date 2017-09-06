@@ -40,6 +40,17 @@ RUN apt update && \
          "\nc.NotebookApp.open_browser = False" \
          "\nc.NotebookApp.token = ''" \
          > /root/.jupyter/jupyter_notebook_config.py && \
+    # Juypter notebook extensions
+    # <https://github.com/ipython-contrib/jupyter_contrib_nbextensions>
+    #
+    pip3 --no-cache-dir install jupyter_contrib_nbextensions \
+    #
+    # Prerequisites of the extension Code Prettifier
+    yapf && \
+    # install javascript and css files
+    jupyter contrib nbextension install --user && \
+    # enable code prettifier
+    jupyter nbextension enable code_prettify/code_prettify && \
     #
     # Tensorflow 1.3.0 - CPU
     #
@@ -79,7 +90,7 @@ RUN apt update && \
     #
     # Cleanup
     #
-    cd && rm opencv-3.3.0.tar.gz && rm opencv_contrib-3.3.0.tar.gz && \
+    cd / && rm opencv-3.3.0.tar.gz && rm opencv_contrib-3.3.0.tar.gz && \
     cd /usr/local/src/opencv && rm -r build && \
     apt clean && \
     apt autoremove && \

@@ -1,4 +1,4 @@
-FROM baikangwang/tensorflow_cpu:jupyter
+FROM baikangwang/tensorflow_cpu:jupyter_py2
 MAINTAINER Baker Wang <baikangwang@hotmail.com>
 
 # referenced from <https://hub.docker.com/r/kevin8093/tf_opencv_contrib/>
@@ -32,7 +32,7 @@ RUN apt update && \
           -D OPENCV_EXTRA_MODULES_PATH=/usr/local/src/opencv_contrib/modules -D BUILD_opencv_xfeatures2d=OFF /usr/local/src/opencv \
           -D OPENCV_EXTRA_MODULES_PATH=/usr/local/src/opencv_contrib/modules -D BUILD_opencv_dnn_modern=OFF /usr/local/src/opencv \
           -D OPENCV_EXTRA_MODULES_PATH=/usr/local/src/opencv_contrib/modules -D BUILD_opencv_dnns_easily_fooled=OFF /usr/local/src/opencv \
-          -D PYTHON_DEFAULT_EXECUTABLE=$(which python3) \
+          -D PYTHON_DEFAULT_EXECUTABLE=$(which python2) \
           .. && \
     make -j"$(nproc)" && \
     make install && \

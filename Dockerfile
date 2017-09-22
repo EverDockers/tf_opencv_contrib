@@ -3,7 +3,8 @@ MAINTAINER Baker Wang <baikangwang@hotmail.com>
 
 # referenced from <https://hub.docker.com/r/kevin8093/tf_opencv_contrib/>
 
-RUN apt update && \
+RUN cd / && \
+    apt update && \
     #
     # OpenCV 3.2
     #
@@ -39,7 +40,7 @@ RUN apt update && \
     #
     # Cleanup
     #
-    cd / && rm opencv-3.3.0.tar.gz && rm opencv_contrib-3.3.0.tar.gz && \
+    rm /opencv-3.3.0.tar.gz && rm /opencv_contrib-3.3.0.tar.gz && \
     cd /usr/local/src/opencv && rm -r build && \
     apt clean && \
     apt autoremove && \

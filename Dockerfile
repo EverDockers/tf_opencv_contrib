@@ -3,7 +3,8 @@ MAINTAINER Baker Wang <baikangwang@hotmail.com>
 
 # referenced from <https://hub.docker.com/r/kevin8093/tf_opencv_contrib/>
 
-RUN apt update && \
+RUN cd / &&
+    apt update && \
     #
     # OpenCV 3.2
     #

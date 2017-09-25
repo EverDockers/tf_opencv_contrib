@@ -1,47 +1,59 @@
-FROM baikangwang/tensorflow_cpu:jupyter
+FROM baikangwang/tf_opencv_contrib:cpu_python3
 MAINTAINER Baker Wang <baikangwang@hotmail.com>
 
-# referenced from <https://hub.docker.com/r/kevin8093/tf_opencv_contrib/>
+# Serving port
+ENV SERVING_PORT 9000
+# Client port
+ENV CLIENT_PORT 8080
 
-RUN cd / && \
-    apt update && \
+# Serving port & client port
+EXPOSE $SERVING_PORT $CLIENT_PORT
+
+RUN apt update && \
     #
-    # OpenCV 3.2
+    # Prerequisites
     #
-    # Dependencies
     apt install -y --no-install-recommends \
-    libjpeg8-dev libtiff5-dev libjasper-dev libpng12-dev \
-    libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libgtk2.0-dev \
-    liblapacke-dev checkinstall && \
-    # Get source from github
-    #git clone https://github.com/opencv/opencv.git /usr/local/src/opencv && \
-    #git clone https://github.com/opencv/opencv_contrib.git /usr/local/src/opencv_contrib && \
-    wget https://github.com/opencv/opencv/archive/3.3.0.tar.gz -O opencv-3.3.0.tar.gz && \
-    tar -xvf opencv-3.3.0.tar.gz && \
-    mv opencv-3.3.0 /usr/local/src/opencv && \
-    wget https://github.com/opencv/opencv_contrib/archive/3.3.0.tar.gz -O opencv_contrib-3.3.0.tar.gz && \
-    tar -xvf opencv_contrib-3.3.0.tar.gz && \
-    mv opencv_contrib-3.3.0 /usr/local/src/opencv_contrib && \
-    # Compile
-    cd /usr/local/src/opencv && mkdir build && cd build && \
-    cmake -D CMAKE_INSTALL_PREFIX=/usr/local \
-          -D BUILD_TESTS=OFF \
-          -D BUILD_opencv_gpu=OFF \
-          -D BUILD_PERF_TESTS=OFF \
-          -D WITH_IPP=OFF \
-          -D OPENCV_EXTRA_MODULES_PATH=/usr/local/src/opencv_contrib/modules \
-          -D OPENCV_EXTRA_MODULES_PATH=/usr/local/src/opencv_contrib/modules -D BUILD_opencv_xfeatures2d=OFF /usr/local/src/opencv \
-          -D OPENCV_EXTRA_MODULES_PATH=/usr/local/src/opencv_contrib/modules -D BUILD_opencv_dnn_modern=OFF /usr/local/src/opencv \
-          -D OPENCV_EXTRA_MODULES_PATH=/usr/local/src/opencv_contrib/modules -D BUILD_opencv_dnns_easily_fooled=OFF /usr/local/src/opencv \
-          -D PYTHON_DEFAULT_EXECUTABLE=$(which python3) \
-          .. && \
-    make -j"$(nproc)" && \
-    make install && \
+        # Build tools
+        build-essential g++ \
+        # Developer Essentials
+        curl git wget zip unzip \
+        libfreetype6-dev \
+        libpng12-dev \
+        libzmq3-dev \
+        pkg-config \
+        software-properties-common \
+        swig \
+        zlib1g-dev \
+        libcurl3-dev && \
+    # Grpc
+    pip3 install --no-cache-dir mock grpcio && \
+    # pip3 install --no-cache-dir tensorflow-serving-api && \
     #
-    # Cleanup
+    # Clean up
     #
-    rm /opencv-3.3.0.tar.gz && rm /opencv_contrib-3.3.0.tar.gz && \
-    cd /usr/local/src/opencv && rm -r build && \
-    apt clean && \
+    apt-get clean && \
+    apt autoremove && \
+    rm -rf /var/lib/apt/lists/* && \
+    #
+    # Install Tensorflow serving 1.3.0
+    #
+    # Install using apt-get
+    echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" | tee /etc/apt/sources.list.d/tensorflow-serving.list && \
+    curl https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.release.pub.gpg | apt-key add - && \
+    apt update && apt install tensorflow-model-server && \
+    apt upgrade tensorflow-model-server && \
+    #
+    # Clean up
+    #
+    apt-get clean && \
     apt autoremove && \
     rm -rf /var/lib/apt/lists/*
+
+#
+# tensorflow-serving-api
+# just copy the built files in python2 to python3.5 packages since there hasn't been official package supporting python3
+#
+COPY tensorflow_serving_api-1.3.0 /usr/local/lib/python3.5/dist-packages/
+
+CMD ["/bin/bash"]

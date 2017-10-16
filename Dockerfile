@@ -1,4 +1,4 @@
-FROM baikangwang/tensorflow_cpu:jupyter
+FROM baikangwang/tensorflow_gpu:jupyter
 MAINTAINER Baker Wang <baikangwang@hotmail.com>
 
 # referenced from <https://hub.docker.com/r/kevin8093/tf_opencv_contrib/>
@@ -45,3 +45,5 @@ RUN cd / && \
     apt clean && \
     apt autoremove && \
     rm -rf /var/lib/apt/lists/*
+
+    CMD ["/bin/bash"]

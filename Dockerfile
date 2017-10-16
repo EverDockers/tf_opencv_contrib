@@ -1,4 +1,4 @@
-FROM baikangwang/tf_opencv_contrib:cpu_3.5
+FROM baikangwang/tf_opencv_contrib:gpu_3.5
 MAINTAINER Baker Wang <baikangwang@hotmail.com>
 
 # Serving port

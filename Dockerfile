@@ -3,12 +3,16 @@ MAINTAINER Baker Wang <baikangwang@hotmail.com>
 
 # referenced from <https://hub.docker.com/r/kevin8093/tf_opencv_contrib/>
 
+# RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list
+
 RUN apt update && \
     # Dependencies
-    apt install -y --no-install-recommends \
+    apt install -y --no-install-recommends pkg-config \
     libjpeg8-dev libtiff5-dev libjasper-dev libpng12-dev \
-    libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libgtk2.0-dev \
-    liblapacke-dev checkinstall && \
+    libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
+    libxvidcore-dev libx264-dev \
+    libgtk-3-dev \
+    libatlas-base-dev gfortran && \
     apt clean && \
     apt autoremove && \
     rm -rf /var/lib/apt/lists/*
